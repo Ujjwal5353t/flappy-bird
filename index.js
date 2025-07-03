@@ -3,8 +3,10 @@ let ctx = canvas.getContext("2d");
 canvas.height = window.innerHeight;
 canvas.width = window.innerWidth;
 let framecount = 0;
-let isGameOver = false;
+
 let score = 0;
+
+let gamestate = "home";
 
 const bgImage = new Image();
 bgImage.src = 'Images/flappybirdbg.png';
@@ -15,6 +17,10 @@ birdimg.src = 'Images/flappybird.png';
 const pipeImg = new Image();
 pipeImg.src = 'Images/bottompipe.png';
 
+const homelogo = new Image();
+homelogo.src = 'Images/flappyBirdLogo.png';
+
+
 let bird = {
     x: 100,
     y: 200,
@@ -24,13 +30,14 @@ let bird = {
     velocity: 0
 }
 function draw() {
-    if (!isGameOver) {
+    if (gamestate === "playing") {
+        startbtn.style.display = 'none';
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(bgImage , 0 , 0 , canvas.width , canvas.height);
+        ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
         updateBird();
         updatePipe();
 
-        ctx.drawImage(birdimg , bird.x , bird.y , bird.width , bird.height);
+        ctx.drawImage(birdimg, bird.x, bird.y, bird.width, bird.height);
 
         ctx.fillStyle = 'black';
         ctx.font = '30px Arial';
@@ -44,15 +51,31 @@ function draw() {
         drawPipes();
 
         if (bird.y < 0 || (bird.y + bird.height) > canvas.height) {
-            isGameOver = true;
-            gameOver();
+           gamestate = "gameover";
         }
         pipes.forEach(pipe => {
             if (bird.x < pipe.x + pipe.pipeWidth && bird.x + bird.width > pipe.x && (bird.y < pipe.upperPipe || bird.y + bird.height > pipe.upperPipe + pipe.pipeGap)) {
-                isGameOver = true;
-                gameOver()
+                gamestate = "gameover";
             }
         });
+    }
+
+    if (gamestate === "home") {
+        startbtn.style.display = 'block';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+
+        const logoWidth = 300;
+        const logoHeight = 100;
+        ctx.drawImage(homelogo, canvas.width / 2 - logoWidth / 2, 100, logoWidth, logoHeight);
+
+        ctx.drawImage(birdimg, bird.x, bird.y, bird.width, bird.height);
+
+
+    }
+
+    if(gamestate === "gameover"){
+        gameOver();
     }
 
 
@@ -67,7 +90,11 @@ function updateBird() {
 
 let key = document.addEventListener("keydown", (e) => {
     if (e.code === "Space") {
+       if(gamestate === "home"){
+        gamestate = "playing";
+       } else if( gamestate === 'playing'){
         bird.velocity = -5.2;
+       }
     }
 })
 
@@ -78,7 +105,7 @@ function generatePipe() {
     let pipe = {
         x: canvas.width,
         pipeWidth: 40,
-        pipeGap: 150,
+        pipeGap: 120,
         upperPipe: Math.floor((Math.random() * 250) + 50),
         passed: false
     }
@@ -99,12 +126,12 @@ function updatePipe() {
 }
 
 function drawPipes() {
-    
+
     pipes.forEach(pipe => {
         ctx.save();
-        ctx.translate(pipe.x + pipe.pipeWidth/2  ,  pipe.upperPipe);
-        ctx.scale(1 , -1);
-        ctx.drawImage(pipeImg , -pipe.pipeWidth / 2, 0, pipe.pipeWidth, canvas.height);
+        ctx.translate(pipe.x + pipe.pipeWidth / 2, pipe.upperPipe);
+        ctx.scale(1, -1);
+        ctx.drawImage(pipeImg, -pipe.pipeWidth / 2, 0, pipe.pipeWidth, canvas.height);
         ctx.restore();
 
         const bottom = pipe.upperPipe + pipe.pipeGap;
@@ -132,6 +159,9 @@ const button = document.querySelector(".restart")
 button.addEventListener("click", (e) => {
     window.location.reload();
 })
+
+const startbtn = document.querySelector(".start");
+
 
 
 bgImage.onload = () => {

@@ -24,5 +24,21 @@ canvas {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  display: none; 
+  display: none;
+}
+
+.start {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.start-img {
+  width: 100px; 
+  height: auto;
 }
