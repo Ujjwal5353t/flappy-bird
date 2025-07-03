@@ -1,0 +1,28 @@
+body {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  background: #70c5ce;
+}
+
+canvas {
+  display: block;
+  margin: auto;
+  background: #fff;
+  border: 2px solid #000;
+}
+
+.restart {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 100px);
+  padding: 12px 24px;
+  font-size: 18px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: none; 
+}
